@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FormControl, ListGroup } from 'react-bootstrap';
+import { FormControl, ListGroup, InputGroup, Button } from 'react-bootstrap';
+import { FaTimesCircle } from 'react-icons/fa'; // Import the icon from react-icons
 
 const TypeAheadSearch = () => {
   const [query, setQuery] = useState('');
@@ -32,16 +33,26 @@ const TypeAheadSearch = () => {
     setFilteredSuggestions([]);
   };
 
+  const clearSearch = () => {
+    setQuery('');
+    setFilteredSuggestions([]);
+  };
+
   return (
     <div className="container mt-3">
       <div className="row justify-content-center">
         <div className="col-md-6">
-          <FormControl
-            type="text"
-            placeholder="Search..."
-            value={query}
-            onChange={handleInputChange}
-          />
+          <InputGroup>
+            <FormControl
+              type="text"
+              placeholder="Search..."
+              value={query}
+              onChange={handleInputChange}
+            />
+            <InputGroup.Text onClick={clearSearch} style={{ cursor: 'pointer' }}>
+              <FaTimesCircle />
+            </InputGroup.Text>
+          </InputGroup>
           {filteredSuggestions.length > 0 && (
             <ListGroup>
               {filteredSuggestions.map((suggestion) => (
