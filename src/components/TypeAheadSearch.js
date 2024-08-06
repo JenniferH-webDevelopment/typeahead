@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { FormControl, ListGroup, InputGroup, Button } from 'react-bootstrap';
-import { FaTimesCircle } from 'react-icons/fa'; // Import the icon from react-icons
+import { FormControl, ListGroup, InputGroup } from 'react-bootstrap';
+import { FaTimesCircle, FaSearch } from 'react-icons/fa'; // Import the icon from react-icons
 
 const TypeAheadSearch = () => {
   const [query, setQuery] = useState('');
+  const [result, setResult] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const products = [
+    { id: 1, name: 'Chips', picture: 'picture1.jpg' },
+    { id: 2, name: 'Chicken', picture: 'picture2.jpg' },
+    { id: 3, name: 'Gloves', picture: 'picture3.jpg' },
+    // Add more product objects as needed
+  ];
 
   useEffect(() => {
     // Fetch suggestions from the mock API
@@ -38,6 +45,16 @@ const TypeAheadSearch = () => {
     setFilteredSuggestions([]);
   };
 
+  const performSearch = () => {
+    if (query) {
+      const filtered = products.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setResult(filtered);
+      console.log('Search result:', filtered);
+    }
+  };
+
   return (
     <div className="container mt-3">
       <div className="row justify-content-center">
@@ -49,8 +66,13 @@ const TypeAheadSearch = () => {
               value={query}
               onChange={handleInputChange}
             />
-            <InputGroup.Text onClick={clearSearch} style={{ cursor: 'pointer' }}>
-              <FaTimesCircle />
+            {query && (
+              <InputGroup.Text onClick={clearSearch} style={{ cursor: 'pointer' }}>
+                <FaTimesCircle />
+              </InputGroup.Text>
+            )}
+            <InputGroup.Text onClick={performSearch} style={{ cursor: 'pointer' }}>
+              <FaSearch />
             </InputGroup.Text>
           </InputGroup>
           {filteredSuggestions.length > 0 && (
