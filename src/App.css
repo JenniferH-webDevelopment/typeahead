@@ -7,6 +7,11 @@
   pointer-events: none;
 }
 
+.list-group-item-action:hover {
+  background-color: #f8f9fa; /* Light gray background */
+  border: 1px solid #007bff; /* Blue border */
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

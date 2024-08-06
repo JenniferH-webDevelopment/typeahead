@@ -54,11 +54,12 @@ const TypeAheadSearch = () => {
             </InputGroup.Text>
           </InputGroup>
           {filteredSuggestions.length > 0 && (
-            <ListGroup>
+            <ListGroup className="bg-light border rounded mt-2">
               {filteredSuggestions.map((suggestion) => (
                 <ListGroup.Item
                   key={suggestion.id}
                   onClick={() => handleSuggestionClick(suggestion)}
+                  className="list-group-item-action"
                 >
                   {suggestion.name}
                 </ListGroup.Item>
