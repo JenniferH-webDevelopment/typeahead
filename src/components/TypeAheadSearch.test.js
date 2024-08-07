@@ -2,82 +2,92 @@ import React from 'react';
 import { render, screen, fireEvent, } from '@testing-library/react';
 import TypeAheadSearch from './TypeAheadSearch';
 
-// test('renders TypeAheadSearch component', () => {
-//   render(<TypeAheadSearch />);
-//   const inputElement = screen.getByPlaceholderText(/search.../i);
-//   expect(inputElement).toBeInTheDocument();
-// });
+test('renders TypeAheadSearch component', () => {
+  render(<TypeAheadSearch />);
+  const inputElement = screen.getByPlaceholderText(/search.../i);
+  expect(inputElement).toBeInTheDocument();
+});
 
 test('updates input value and filters suggestions on input change', async () => {
-  const suggestions = ['Chair', 'Chips', 'Gloves'];
+  const suggestions = [
+    { id: 1, name: 'Chair' },
+    { id: 2, name: 'Chips' },
+    { id: 3, name: 'Gloves' }
+  ];
   render(<TypeAheadSearch suggestions={suggestions} />);
   const inputElement = screen.getByPlaceholderText(/search.../i);
 
   fireEvent.change(inputElement, { target: { value: 'Gloves' } });
-
-  expect(inputElement.value).toBe('Gloves');
-
-  // Wait for the suggestions to appear
-  const suggestionItems = await screen.findAllByRole('option');
-  
-  expect(suggestionItems.length).toBe(1);
-  expect(suggestionItems[0]).toHaveTextContent('Gloves');
+  const suggestionElement = await screen.findByText(/Gloves/i);
+  expect(suggestionElement).toBeInTheDocument();
 });
 
-// test('checks if the clear button is visible after typing', () => {
-//   render(<TypeAheadSearch />);
-//   const inputElement = screen.getByPlaceholderText(/search.../i);
-
-//   fireEvent.change(inputElement, { target: { value: 'G' } });
-//   const clearButton = screen.getByLabelText(/clear/i);
-
-//   expect(clearButton).toBeVisible();
-// });
-
-test('clears input value on clear button click', () => {
+test('checks if the clear button is visible after typing', () => {
   render(<TypeAheadSearch />);
   const inputElement = screen.getByPlaceholderText(/search.../i);
-  const clearButton = screen.getByLabelText(/clear/i);
 
   fireEvent.change(inputElement, { target: { value: 'G' } });
+  const clearButton = screen.getByLabelText(/clear/i);
+
+  expect(clearButton).toBeVisible();
+});
+
+test('clears input value on clear button click', async () => {
+  const suggestions = [
+    { id: 1, name: 'Chair' },
+    { id: 2, name: 'Chips' },
+    { id: 3, name: 'Gloves' }
+  ];
+  render(<TypeAheadSearch suggestions={suggestions} />);
+  const inputElement = screen.getByPlaceholderText(/search.../i);
+
+  fireEvent.change(inputElement, { target: { value: 'Gloves' } });
+  expect(inputElement.value).toBe('Gloves');
+
+  const clearButton = screen.getByLabelText(/clear/i);
   fireEvent.click(clearButton);
 
   expect(inputElement.value).toBe('');
 });
 
-// test('performs search and displays results on search button click', () => {
-//   render(<TypeAheadSearch />);
-//   const inputElement = screen.getByPlaceholderText(/search.../i);
-//   const searchButton = screen.getByLabelText(/search/i);
+test('performs search and displays results on search button click', async () => {
+  const suggestions = [
+    { id: 1, name: 'Chair' },
+    { id: 2, name: 'Chips' },
+    { id: 3, name: 'Gloves' }
+  ];
+  render(<TypeAheadSearch suggestions={suggestions} />);
+  const inputElement = screen.getByPlaceholderText(/search.../i);
 
-//   expect(searchButton).toBeInTheDocument();
+  fireEvent.change(inputElement, { target: { value: 'Ch' } });
+  expect(inputElement.value).toBe('Ch');
 
-//   fireEvent.change(inputElement, { target: { value: 'Chips' } });
-//   fireEvent.click(searchButton);
+  const searchButton = screen.getByLabelText(/search/i);
+  fireEvent.click(searchButton);
 
-//   const searchResult = screen.getByText(/Chips/i);
-//   expect(searchResult).toBeInTheDocument();
-// });
+  const resultItems = await screen.findAllByRole('option');
+  expect(resultItems).toHaveLength(2);
+  expect(resultItems[0]).toHaveTextContent('Chair');
+  expect(resultItems[1]).toHaveTextContent('Chips');
+});
 
-// test('updates input value and clears suggestions on suggestion click', async () => {
-//   render(<TypeAheadSearch />);
-//   const inputElement = screen.getByPlaceholderText(/search.../i);
+test('updates input value and clears suggestions on suggestion click', async () => {
+  const suggestions = [
+    { id: 1, name: 'Chair' },
+    { id: 2, name: 'Chips' },
+    { id: 3, name: 'Gloves' }
+  ];
+  render(<TypeAheadSearch suggestions={suggestions} />);
+  const inputElement = screen.getByPlaceholderText(/search.../i);
 
-//   fireEvent.change(inputElement, { target: { value: 'Ch' } });
+  fireEvent.change(inputElement, { target: { value: 'Ch' } });
+  expect(inputElement.value).toBe('Ch');
 
-//   expect(inputElement.value).toBe('Ch');
+  const suggestionItem = await screen.findByText('Chair');
+  fireEvent.click(suggestionItem);
 
-//   const suggestionItem = await screen.findByText((content, element) => {
-//     return element.textContent.includes('Chips');
-//   });
-//   expect(suggestionItem).toBeInTheDocument();
+  expect(inputElement.value).toBe('Chair');
 
-//   fireEvent.click(suggestionItem);
-
-//   expect(inputElement.value).toBe('Chips');
-
-//   const remainingSuggestions = screen.queryAllByText((content, element) => {
-//     return element.textContent.includes('Ch');
-//   });
-//   expect(remainingSuggestions.length).toBe(0); // Ensure suggestions are cleared
-// });
+  const suggestionList = screen.queryByRole('listbox');
+  expect(suggestionList).toBeNull();
+});

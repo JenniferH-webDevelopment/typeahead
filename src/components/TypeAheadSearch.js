@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { FormControl, ListGroup, InputGroup } from 'react-bootstrap';
 import { FaTimesCircle, FaSearch } from 'react-icons/fa'; // Import the icon from react-icons
 
-const TypeAheadSearch = () => {
+const TypeAheadSearch = ({ suggestions = [] }) => {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  
   const products = [
     { id: 1, name: 'Chips', picture: 'picture1.jpg' },
     { id: 2, name: 'Chicken', picture: 'picture2.jpg' },
@@ -14,20 +14,12 @@ const TypeAheadSearch = () => {
     // Add more product objects as needed
   ];
 
-  useEffect(() => {
-    // Fetch suggestions from the mock API
-    fetch('https://66b1f5581ca8ad33d4f5e656.mockapi.io/api/product')
-      .then((response) => response.json())
-      .then((data) => setSuggestions(data))
-      .catch((error) => console.error('Error fetching suggestions:', error));
-  }, []);
-
   const handleInputChange = (e) => {
     const value = e.target.value;
     setQuery(value);
     if (value) {
       const filtered = suggestions.filter((item) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
+        item.name && item.name.toLowerCase().includes(value.toLowerCase())
       );
       setFilteredSuggestions(filtered);
     } else {
