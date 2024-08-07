@@ -67,21 +67,22 @@ const TypeAheadSearch = () => {
               onChange={handleInputChange}
             />
             {query && (
-              <InputGroup.Text onClick={clearSearch} style={{ cursor: 'pointer' }}>
+              <InputGroup.Text onClick={clearSearch} style={{ cursor: 'pointer' }} aria-label="clear">
                 <FaTimesCircle />
               </InputGroup.Text>
             )}
-            <InputGroup.Text onClick={performSearch} style={{ cursor: 'pointer' }}>
+            <InputGroup.Text onClick={performSearch} style={{ cursor: 'pointer' }} aria-label="search">
               <FaSearch />
             </InputGroup.Text>
           </InputGroup>
           {filteredSuggestions.length > 0 && (
-            <ListGroup className="bg-light border rounded mt-2">
+            <ListGroup className="bg-light border rounded mt-2" role="listbox">
               {filteredSuggestions.map((suggestion) => (
                 <ListGroup.Item
                   key={suggestion.id}
                   onClick={() => handleSuggestionClick(suggestion)}
                   className="list-group-item-action"
+                  role="option"
                 >
                   {suggestion.name}
                 </ListGroup.Item>
